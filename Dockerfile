@@ -1,8 +1,10 @@
 FROM php:8.2-cli
 
-# pdo_pgsql needs libpq's dev headers to compile against.
+# libpq-dev: pdo_pgsql needs its headers to compile against.
+# unzip: Composer needs this (or the zip extension, which isn't built in
+# here) to extract downloaded packages.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libpq-dev \
+    && apt-get install -y --no-install-recommends libpq-dev unzip \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install pdo pdo_pgsql
 
