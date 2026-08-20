@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Employee System</title>
+<link rel="stylesheet" href="css/index.css">
+</head>
+<body class="app-shell-page">
+<header class="app-header">
+    <span class="app-header__brand">Employee System</span>
+    <p class="app-header__welcome" id="welcome-message">Welcome</p>
+</header>
+
+<div class="app-shell">
+    <aside class="app-sidebar">
+        <button type="button" class="button button--secondary" id="add-employee-toggle-btn">Add Employee</button>
+        <form action="php/auth.php" method="POST">
+            <input type="hidden" name="action" value="logout">
+            <button type="submit" class="button button--secondary">Log Out</button>
+        </form>
+    </aside>
+
+    <main class="app-main">
+    <div class="page">
+        <p class="message message--error" data-role="error" hidden></p>
+        <p class="message message--success" data-role="success" hidden></p>
+
+        <section class="panel" id="add-employee-panel" hidden>
+            <h2>Add Employee</h2>
+            <form id="add-employee-form" class="form-row">
+                <input type="text" name="name" placeholder="Full name" required>
+                <input type="text" name="department" placeholder="Department" required>
+                <input type="tel" name="phone" placeholder="Phone" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <select name="role">
+                    <option value="employee">Employee</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <button type="submit" class="button">Add &amp; Email Login Link</button>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>Employees <span id="employee-count"></span></h2>
+            <div class="table-scroll">
+                <table class="sheet-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Last Login</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employee-rows"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    </main>
+</div>
+
+<template id="employee-row-template">
+    <tr>
+        <td>
+            <span class="cell-view cell-name"></span>
+            <input type="text" class="cell-edit cell-edit-name" hidden>
+        </td>
+        <td>
+            <span class="cell-view cell-department"></span>
+            <input type="text" class="cell-edit cell-edit-department" hidden>
+        </td>
+        <td>
+            <span class="cell-view cell-phone"></span>
+            <input type="tel" class="cell-edit cell-edit-phone" hidden>
+        </td>
+        <td>
+            <span class="cell-view cell-email"></span>
+            <input type="email" class="cell-edit cell-edit-email" hidden>
+        </td>
+        <td>
+            <span class="badge cell-view cell-role"></span>
+            <select class="cell-edit cell-edit-role" hidden>
+                <option value="employee">Employee</option>
+                <option value="admin">Admin</option>
+            </select>
+        </td>
+        <td class="cell-last-login"></td>
+        <td>
+            <div class="sheet-table__actions">
+                <button type="button" class="button button--small cell-edit-btn">Edit</button>
+                <button type="button" class="button button--small cell-save-btn" hidden>Save</button>
+                <button type="button" class="button button--small button--secondary cell-cancel-btn" hidden>Cancel</button>
+                <button type="button" class="button button--small button--secondary cell-send-link-btn">Send Login Link</button>
+                <button type="button" class="button button--small button--danger cell-delete-btn">Delete</button>
+            </div>
+        </td>
+    </tr>
+</template>
+
+<script src="js/bg-spheres.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

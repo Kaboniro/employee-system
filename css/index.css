@@ -1,0 +1,921 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #dae3e5;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: #1f2430;
+    padding: 3rem 1rem;
+    position: relative;
+}
+
+/* ---- Background spheres: fixed behind everything, injected by
+   js/bg-spheres.js on every page. Each is shaded like a diffuse-lit 3D
+   ball (soft off-center highlight fading to a deeper shade at the edge)
+   rather than a flat blurry blob. Glass cards sit above them in normal
+   flow, so a sphere reads through their translucency and peeks out
+   around their edges. ---- */
+
+.bg-spheres {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* On app-shell pages, keep the spheres clear of the opaque header/sidebar
+   bands instead of mostly hiding behind them — shrink the container's
+   origin in from those edges; the per-sphere percentages below then
+   resolve against this smaller box automatically. */
+body.app-shell-page .bg-spheres {
+    top: 66px;
+    left: 210px;
+}
+
+@media (max-width: 720px) {
+    body.app-shell-page .bg-spheres {
+        top: 140px;
+        left: 0;
+    }
+}
+
+.bg-sphere {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(3px);
+}
+
+.bg-sphere--1 {
+    top: 16%;
+    left: 50%;
+    margin-left: -260px;
+    width: 14vw;
+    height: 14vw;
+    min-width: 130px;
+    min-height: 130px;
+    max-width: 170px;
+    max-height: 170px;
+    background: radial-gradient(circle at 38% 35%, #a1c6ea 0%, #507dbc 40%, #04080f 70%, transparent 100%);
+}
+
+.bg-sphere--2 {
+    bottom: 14%;
+    left: 50%;
+    margin-left: 90px;
+    width: 14vw;
+    height: 14vw;
+    min-width: 130px;
+    min-height: 130px;
+    max-width: 170px;
+    max-height: 170px;
+    background: radial-gradient(circle at 38% 35%, #bbd1ea 0%, #507dbc 40%, #04080f 70%, transparent 100%);
+}
+
+/* ---- Editorial split layout for the auth flow (login, register, verify,
+   forgot-password): an asymmetric two-pane composition instead of a single
+   centered card. The left pane is the "signature moment" — bold type plus
+   a custom CSS kanban illustration built from the app's own task-status
+   colors — rather than a stock icon or generic decoration. ---- */
+
+body.auth-shell {
+    padding: 0;
+    min-height: 100vh;
+}
+
+.auth-split {
+    display: flex;
+    min-height: 100vh;
+}
+
+.auth-hero {
+    flex: 0 0 44%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 3rem;
+    background: #04080f;
+    color: #ffffff;
+    overflow: hidden;
+}
+
+.auth-hero__content {
+    max-width: 380px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.auth-hero__eyebrow {
+    margin: 0 0 1rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.auth-hero__title {
+    margin: 0 0 1rem;
+    font-size: 3rem;
+    line-height: 1.05;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.auth-hero__tagline {
+    margin: 0 0 2.75rem;
+    max-width: 300px;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.kanban {
+    display: flex;
+    gap: 1rem;
+}
+
+.kanban__col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.kanban__label {
+    margin: 0 0 0.15rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.kanban__card {
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.18);
+    animation: kanban-float 4.5s ease-in-out infinite;
+}
+
+.kanban__card--sm {
+    height: 20px;
+}
+
+.kanban__card--pending {
+    background: #f97316;
+}
+
+.kanban__card--completed {
+    background: #10b981;
+}
+
+.kanban__card:nth-child(2) { animation-delay: 0.5s; }
+.kanban__card:nth-child(3) { animation-delay: 1s; }
+
+@keyframes kanban-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+.auth-panel {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+}
+
+.auth-panel__inner {
+    width: 100%;
+    max-width: 380px;
+    animation: panel-slide-in 0.35s ease both;
+}
+
+/* Applied by js/page-transition.js just before navigating to another
+   auth-flow page — only the form section slides, the hero pane stays put. */
+.auth-panel__inner.panel-exit {
+    animation: panel-slide-out 0.22s ease both;
+}
+
+@keyframes panel-slide-in {
+    from { transform: translateX(48px); }
+    to { transform: translateX(0); }
+}
+
+@keyframes panel-slide-out {
+    from { transform: translateX(0); }
+    to { transform: translateX(-48px); }
+}
+
+.auth-panel__inner h2 {
+    margin: 0 0 1.5rem;
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+
+.auth-panel__inner form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Floating-label fields: input first, label second, so the sibling
+   selector below can react to focus/content without JS. */
+.field {
+    position: relative;
+    margin-top: 1.35rem;
+}
+
+.field input {
+    width: 100%;
+    padding: 1.1rem 0.2rem 0.4rem;
+    border: none;
+    border-bottom: 2px solid #c4d3dc;
+    border-radius: 0;
+    background: transparent;
+    font-size: 1rem;
+    color: #1f2430;
+}
+
+.field input:focus {
+    outline: none;
+    border-bottom-color: #507dbc;
+}
+
+.field label {
+    position: absolute;
+    left: 0.2rem;
+    top: 1.05rem;
+    font-size: 1rem;
+    color: #5c6b78;
+    pointer-events: none;
+    transition: top 0.15s ease, font-size 0.15s ease, color 0.15s ease;
+}
+
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label {
+    top: -0.1rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #507dbc;
+}
+
+.auth-panel__inner button[type="submit"] {
+    margin-top: 1.75rem;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 6px;
+    background: #507dbc;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.auth-panel__inner button[type="submit"]:hover {
+    background: #3f699c;
+}
+
+.auth-panel__inner small {
+    display: block;
+    margin-top: 0.35rem;
+    color: #7a8093;
+    font-size: 0.78rem;
+}
+
+@media (max-width: 860px) {
+    .auth-split {
+        flex-direction: column;
+    }
+
+    .auth-hero {
+        flex: 0 0 auto;
+        padding: 2.5rem 1.5rem;
+    }
+
+    .auth-hero__title {
+        font-size: 2.2rem;
+    }
+
+    .kanban {
+        display: none;
+    }
+
+    .auth-panel {
+        padding: 2.5rem 1.5rem;
+    }
+}
+
+/* ---- Glass cards: the card itself is the frosted glass surface.
+   Only actual content pieces inside it (inputs, task cards, tables)
+   get a solid white surface, for legibility. ---- */
+
+.auth-card {
+    width: 100%;
+    max-width: 380px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.32);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 22px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.12);
+}
+
+.auth-card h2 {
+    margin: 0 0 1.25rem;
+    font-size: 1.3rem;
+}
+
+.auth-card__hint {
+    color: #555c6b;
+    font-size: 0.9rem;
+    margin-top: -0.5rem;
+}
+
+.auth-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.auth-card label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 0.65rem;
+}
+
+.auth-card input {
+    background: #ffffff;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid #d3d6dd;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.auth-card input:focus {
+    outline: none;
+    border-color: #507dbc;
+    box-shadow: 0 0 0 3px rgba(80, 125, 188, 0.15);
+}
+
+.auth-card small {
+    color: #7a8093;
+    font-size: 0.78rem;
+}
+
+.auth-card button {
+    margin-top: 1.1rem;
+    padding: 0.65rem;
+    border: none;
+    border-radius: 6px;
+    background: #507dbc;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.auth-card button:hover {
+    background: #3f699c;
+}
+
+.auth-card__footer {
+    margin: 1.25rem 0 0;
+    font-size: 0.88rem;
+    text-align: center;
+    color: #555c6b;
+}
+
+.auth-card__secondary-form {
+    margin-top: 0.5rem;
+}
+
+.link-button {
+    background: none !important;
+    color: #507dbc !important;
+    font-weight: 500 !important;
+    padding: 0.3rem !important;
+    margin-top: 0.5rem !important;
+}
+
+.link-button:hover {
+    text-decoration: underline;
+    background: none !important;
+}
+
+.message {
+    padding: 0.6rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    margin: 0 0 1rem;
+}
+
+.message--error {
+    background: #fdecea;
+    color: #b3261e;
+}
+
+.message--success {
+    background: #e8f5e9;
+    color: #1e7e34;
+}
+
+/* ---- App shell layout (dashboard / admin): full-width header, a
+   sidebar for actions, and a main content column. ---- */
+
+body.app-shell-page {
+    padding: 0;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem 2rem;
+    background: #507dbc;
+    box-shadow: 0 4px 14px rgba(31, 38, 135, 0.2);
+}
+
+.app-header__brand {
+    font-weight: 800;
+    font-size: 1.15rem;
+    letter-spacing: -0.01em;
+    color: #ffffff;
+}
+
+.app-header__welcome {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.app-shell {
+    display: flex;
+    align-items: flex-start;
+    min-height: calc(100vh - 66px);
+}
+
+.app-sidebar {
+    flex: 0 0 210px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 1.5rem 1.25rem;
+    background: #bbd1ea;
+    border-right: 1px solid rgba(80, 125, 188, 0.15);
+    min-height: calc(100vh - 66px);
+}
+
+.app-sidebar .button {
+    width: 100%;
+    text-align: center;
+}
+
+.app-sidebar__section {
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(80, 125, 188, 0.2);
+}
+
+.app-sidebar__heading {
+    margin: 0 0 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #04080f;
+}
+
+.online-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.online-list__item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #04080f;
+}
+
+.online-list__empty {
+    font-size: 0.82rem;
+    color: #5c7398;
+    font-style: italic;
+}
+
+.online-dot {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.3);
+}
+
+.app-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 2rem;
+}
+
+@media (max-width: 720px) {
+    .app-shell {
+        flex-direction: column;
+    }
+
+    .app-sidebar {
+        flex: 0 0 auto;
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        min-height: 0;
+        border-right: none;
+        border-bottom: 1px solid rgba(80, 125, 188, 0.2);
+    }
+
+    .app-sidebar .button {
+        width: auto;
+        flex: 1 1 auto;
+    }
+}
+
+.page {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.panel {
+    background: rgba(255, 255, 255, 0.32);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 22px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.12);
+    margin-bottom: 1.5rem;
+}
+
+.panel:last-of-type {
+    margin-bottom: 0;
+}
+
+.panel h2 {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+}
+
+/* ---- Buttons ---- */
+
+.button {
+    display: inline-block;
+    padding: 0.55rem 0.9rem;
+    border: none;
+    border-radius: 6px;
+    background: #507dbc;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.button:hover {
+    background: #3f699c;
+}
+
+.button--secondary {
+    background: #eceef2;
+    color: #1f2430;
+    border: 1px solid rgba(31, 36, 48, 0.1);
+}
+
+.button--secondary:hover {
+    background: #dfe2e8;
+}
+
+.button--danger {
+    background: #d64545;
+}
+
+.button--danger:hover {
+    background: #b93838;
+}
+
+.button--small {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+}
+
+.inline-form {
+    display: inline;
+}
+
+/* ---- Forms (dashboard-style) ---- */
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+}
+
+.form-row input,
+.form-row select {
+    background: #ffffff;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid #d3d6dd;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    flex: 1 1 160px;
+}
+
+/* ---- Task groups ---- */
+
+.task-groups {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+    .task-groups {
+        grid-template-columns: 1fr;
+    }
+}
+
+.task-group h3 {
+    margin: 0 0 0.75rem;
+    font-size: 0.95rem;
+    color: #555c6b;
+}
+
+.task-group {
+    background: rgba(255, 255, 255, 0.28);
+    border: 1.5px dashed rgba(255, 255, 255, 0.75);
+    border-radius: 16px;
+    padding: 1rem;
+    transition: background 0.15s ease, border-color 0.15s ease, border-style 0.15s ease;
+}
+
+.task-group--dragover {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: #507dbc;
+    border-style: solid;
+}
+
+.task-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.6rem;
+    min-height: 3rem;
+}
+
+/* ---- Add-task form ---- */
+
+.task-add-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.task-add-form input[type="text"] {
+    flex: 1 1 160px;
+}
+
+.task-add-form input {
+    background: #ffffff;
+    border: 1px solid #d3d6dd;
+    border-radius: 6px;
+    padding: 0.5rem 0.6rem;
+    font-size: 0.9rem;
+}
+
+/* ---- Task cards: solid status color, white border ---- */
+
+.task-card {
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+    padding: 0.75rem 0.9rem;
+    box-shadow: 0 4px 14px rgba(31, 38, 135, 0.12);
+    color: #ffffff;
+    cursor: grab;
+}
+
+.task-card:active {
+    cursor: grabbing;
+}
+
+.task-card--pending {
+    background: #f97316;
+}
+
+.task-card--completed {
+    background: #10b981;
+}
+
+.task-card--empty {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1.5px dashed #c7cbd3;
+    color: #8a90a0;
+    font-size: 0.88rem;
+    cursor: default;
+    box-shadow: none;
+}
+
+.task-card__status {
+    margin: 0 0 0.3rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.task-card__title {
+    margin: 0;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.task-card--completed .task-card__title {
+    text-decoration: line-through;
+    text-decoration-color: rgba(255, 255, 255, 0.6);
+}
+
+.task-card__due {
+    margin: 0.2rem 0 0;
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.task-card__creator,
+.task-card__completed-by {
+    margin: 0.15rem 0 0;
+    font-size: 0.76rem;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.task-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.6rem;
+}
+
+.task-card__btn {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #507dbc;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.3rem 0.55rem;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.task-card__btn:hover {
+    background: #eceef2;
+}
+
+.task-card__btn--delete {
+    background: #d64545;
+    border-color: #d64545;
+    color: #ffffff;
+}
+
+.task-card__btn--delete:hover {
+    background: #b93838;
+}
+
+.task-card__edit:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-top: 0.2rem;
+}
+
+.task-card__edit input {
+    background: #ffffff;
+    color: #1f2430;
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 0.55rem;
+    font-size: 0.85rem;
+}
+
+
+/* ---- Spreadsheet-style table ---- */
+
+.table-scroll {
+    overflow-x: auto;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 2px;
+}
+
+.sheet-table {
+    width: 100%;
+    min-width: 900px;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.sheet-table th,
+.sheet-table td {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #e5e7eb;
+    text-align: left;
+}
+
+.sheet-table th:not(:last-child),
+.sheet-table td:not(:last-child) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sheet-table th:nth-child(1), .sheet-table td:nth-child(1) { width: 13%; }
+.sheet-table th:nth-child(2), .sheet-table td:nth-child(2) { width: 11%; }
+.sheet-table th:nth-child(3), .sheet-table td:nth-child(3) { width: 10%; }
+.sheet-table th:nth-child(4), .sheet-table td:nth-child(4) { width: 17%; }
+.sheet-table th:nth-child(5), .sheet-table td:nth-child(5) { width: 8%; }
+.sheet-table th:nth-child(6), .sheet-table td:nth-child(6) { width: 13%; }
+.sheet-table th:nth-child(7), .sheet-table td:nth-child(7) { width: 28%; }
+
+.sheet-table thead th {
+    background: #f4f5f7;
+    font-weight: 600;
+}
+
+.sheet-table tbody tr:nth-child(even) {
+    background: #fafbfc;
+}
+
+.sheet-table tbody tr.row--editing {
+    background: #fff7e6;
+    box-shadow: inset 3px 0 0 #f59e0b;
+}
+
+.sheet-table__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+}
+
+.cell-edit {
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid #d3d6dd;
+    border-radius: 6px;
+    padding: 0.3rem 0.45rem;
+    font-size: 0.85rem;
+    width: 100%;
+    min-width: 0;
+}
+
+.cell-edit:not([hidden]) {
+    display: block;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.badge--employee {
+    background: #e5eefa;
+    color: #2c527c;
+}
+
+.badge--admin {
+    background: #04080f;
+    color: #ffffff;
+}

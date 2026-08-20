@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify Code — Employee System</title>
+<link rel="stylesheet" href="css/index.css">
+</head>
+<body class="auth-shell">
+<div class="auth-split">
+    <aside class="auth-hero">
+        <div class="auth-hero__content">
+            <p class="auth-hero__eyebrow">Employee System</p>
+            <h1 class="auth-hero__title">Almost<br>there.</h1>
+            <p class="auth-hero__tagline">One board. Every task. Everyone's progress, visible.</p>
+            <div class="kanban" aria-hidden="true">
+                <div class="kanban__col">
+                    <span class="kanban__label">Pending</span>
+                    <div class="kanban__card kanban__card--pending"></div>
+                    <div class="kanban__card kanban__card--pending kanban__card--sm"></div>
+                </div>
+                <div class="kanban__col">
+                    <span class="kanban__label">Done</span>
+                    <div class="kanban__card kanban__card--completed"></div>
+                    <div class="kanban__card kanban__card--completed kanban__card--sm"></div>
+                    <div class="kanban__card kanban__card--completed"></div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="auth-panel">
+    <div class="auth-panel__inner">
+        <h2>Check Your Email</h2>
+        <p class="auth-card__hint">We sent a 6-digit verification code to your email. It expires in 10 minutes.</p>
+
+        <p class="message message--error" data-role="error" hidden></p>
+        <p class="message message--success" data-role="success" hidden></p>
+
+        <form action="php/auth.php" method="POST">
+            <input type="hidden" name="action" value="verify-code">
+            <input type="hidden" name="csrf_token" class="csrf-token" value="">
+
+            <div class="field">
+                <input type="text" id="code" name="code" placeholder=" " required inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code">
+                <label for="code">Verification Code</label>
+            </div>
+
+            <button type="submit">Verify</button>
+        </form>
+
+        <form action="php/auth.php" method="POST" class="auth-card__secondary-form">
+            <input type="hidden" name="action" value="resend-code">
+            <input type="hidden" name="csrf_token" class="csrf-token" value="">
+            <button type="submit" class="link-button">Resend code</button>
+        </form>
+    </div>
+    </main>
+</div>
+
+<script src="js/flash.js"></script>
+<script src="js/page-transition.js"></script>
+</body>
+</html>

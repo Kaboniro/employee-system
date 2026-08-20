@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log In — Employee System</title>
+<link rel="stylesheet" href="css/index.css">
+</head>
+<body class="auth-shell">
+<div class="auth-split">
+    <aside class="auth-hero">
+        <div class="auth-hero__content">
+            <p class="auth-hero__eyebrow">Employee System</p>
+            <h1 class="auth-hero__title">Work,<br>organized.</h1>
+            <p class="auth-hero__tagline">One board. Every task. Everyone's progress, visible.</p>
+            <div class="kanban" aria-hidden="true">
+                <div class="kanban__col">
+                    <span class="kanban__label">Pending</span>
+                    <div class="kanban__card kanban__card--pending"></div>
+                    <div class="kanban__card kanban__card--pending kanban__card--sm"></div>
+                </div>
+                <div class="kanban__col">
+                    <span class="kanban__label">Done</span>
+                    <div class="kanban__card kanban__card--completed"></div>
+                    <div class="kanban__card kanban__card--completed kanban__card--sm"></div>
+                    <div class="kanban__card kanban__card--completed"></div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="auth-panel">
+    <div class="auth-panel__inner">
+        <h2>Log In</h2>
+
+        <p class="message message--error" data-role="error" hidden></p>
+        <p class="message message--success" data-role="success" hidden></p>
+
+        <form action="php/auth.php" method="POST" id="login-form">
+            <input type="hidden" name="action" value="login">
+            <input type="hidden" name="csrf_token" class="csrf-token" value="">
+
+            <div class="field">
+                <input type="email" id="email" name="email" placeholder=" " required autocomplete="email">
+                <label for="email">Email</label>
+            </div>
+
+            <div class="field">
+                <input type="password" id="password" name="password" placeholder=" " required minlength="8" autocomplete="current-password">
+                <label for="password">Password</label>
+            </div>
+
+            <button type="submit">Log In</button>
+        </form>
+
+        <p class="auth-card__footer"><a href="forgot-password.html">Forgot password?</a></p>
+        <p class="auth-card__footer">Don't have an account? <a href="register.html">Register</a></p>
+    </div>
+    </main>
+</div>
+
+<script src="js/flash.js"></script>
+<script src="js/page-transition.js"></script>
+</body>
+</html>

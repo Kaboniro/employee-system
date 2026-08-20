@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Dashboard — Employee System</title>
+<link rel="stylesheet" href="css/index.css">
+</head>
+<body class="app-shell-page">
+<header class="app-header">
+    <span class="app-header__brand">Employee System</span>
+    <p class="app-header__welcome" id="welcome-message">Welcome</p>
+</header>
+
+<div class="app-shell">
+    <aside class="app-sidebar">
+        <form action="php/auth.php" method="POST">
+            <input type="hidden" name="action" value="logout">
+            <button type="submit" class="button button--secondary">Log Out</button>
+        </form>
+
+        <div class="app-sidebar__section">
+            <h3 class="app-sidebar__heading">Online Now</h3>
+            <ul class="online-list" id="online-list"></ul>
+        </div>
+    </aside>
+
+    <main class="app-main">
+    <div class="page">
+        <p class="message message--error" data-role="error" hidden></p>
+        <p class="message message--success" data-role="success" hidden></p>
+
+        <section class="panel">
+            <h2>Task Board</h2>
+            <form id="add-task-form" class="task-add-form">
+                <input type="text" id="new-task-title" placeholder="New task title" required>
+                <input type="date" id="new-task-due">
+                <button type="submit" class="button button--small">Add Task</button>
+            </form>
+            <div class="task-groups">
+                <div class="task-group" id="pending-group" data-status="pending">
+                    <h3 id="pending-count">Pending</h3>
+                    <ul class="task-list" id="pending-tasks"></ul>
+                </div>
+                <div class="task-group" id="completed-group" data-status="completed">
+                    <h3 id="completed-count">Completed</h3>
+                    <ul class="task-list" id="completed-tasks"></ul>
+                </div>
+            </div>
+        </section>
+    </div>
+    </main>
+</div>
+
+<template id="task-card-template">
+    <li class="task-card" draggable="true">
+        <div class="task-card__view">
+            <p class="task-card__status"></p>
+            <p class="task-card__title"></p>
+            <p class="task-card__due"></p>
+            <p class="task-card__creator"></p>
+            <p class="task-card__completed-by"></p>
+            <div class="task-card__actions">
+                <button type="button" class="task-card__btn task-card__btn--complete">Mark Complete</button>
+                <button type="button" class="task-card__btn task-card__btn--edit">Edit</button>
+                <button type="button" class="task-card__btn task-card__btn--delete">Delete</button>
+            </div>
+        </div>
+        <div class="task-card__edit" hidden>
+            <input type="text" class="task-card__edit-title" placeholder="Task title">
+            <input type="date" class="task-card__edit-due">
+            <div class="task-card__actions">
+                <button type="button" class="task-card__btn task-card__btn--save">Save</button>
+                <button type="button" class="task-card__btn task-card__btn--cancel">Cancel</button>
+            </div>
+        </div>
+    </li>
+</template>
+
+<script src="js/bg-spheres.js"></script>
+<script src="js/employee-dashboard.js"></script>
+</body>
+</html>
