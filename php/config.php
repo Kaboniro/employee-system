@@ -9,17 +9,23 @@ declare(strict_types=1);
 $databaseUrl = getenv('DATABASE_URL');
 if ($databaseUrl !== false && $databaseUrl !== '') {
     $parts = parse_url($databaseUrl);
+    parse_str($parts['query'] ?? '', $query);
     define('DB_HOST', $parts['host'] ?? 'localhost');
     define('DB_PORT', (string) ($parts['port'] ?? '5432'));
     define('DB_NAME', ltrim($parts['path'] ?? '', '/'));
     define('DB_USER', $parts['user'] ?? '');
     define('DB_PASS', $parts['pass'] ?? '');
+    // Managed Postgres hosts (Neon, Render, Railway, ...) require SSL and
+    // some reject the connection outright without an explicit sslmode,
+    // rather than negotiating it via the default "prefer" behavior.
+    define('DB_SSLMODE', $query['sslmode'] ?? 'require');
 } else {
     define('DB_HOST', getenv('PGHOST') ?: getenv('DB_HOST') ?: 'localhost');
     define('DB_PORT', getenv('PGPORT') ?: getenv('DB_PORT') ?: '5432');
     define('DB_NAME', getenv('PGDATABASE') ?: getenv('DB_NAME') ?: 'employee_demo');
     define('DB_USER', getenv('PGUSER') ?: getenv('DB_USER') ?: 'postgres');
     define('DB_PASS', getenv('PGPASSWORD') ?: getenv('DB_PASS') ?: 'emma');
+    define('DB_SSLMODE', getenv('DB_SSLMODE') ?: '');
 }
 
 // ---- SMTP (PHPMailer) ----
